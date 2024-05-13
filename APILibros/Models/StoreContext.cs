@@ -12,6 +12,8 @@ namespace APILibros.Models
         public DbSet<Pais> Paises { get; set; }
         public DbSet<Departamento> Departamentos { get; set; }
         public DbSet<Municipio> Municipios { get; set; }
+        public DbSet<Residencia> Residencias { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,13 +33,23 @@ namespace APILibros.Models
             // Asegurarse que las relaciones de navegación están correctamente configuradas
             modelBuilder.Entity<Departamento>()
                 .HasOne(d => d.Pais)
-                .WithMany(p => p.Departamentos)
+                .WithMany(p => p.Departamentos) //Departamentos es la lista que esta en pais
                 .HasForeignKey(d => d.CodigoPais);
 
             modelBuilder.Entity<Municipio>()
                 .HasOne(m => m.Departamento)
                 .WithMany(d => d.Municipios)
                 .HasForeignKey(m => new { m.CodigoPais, m.CodigoDepartamento });
+
+            modelBuilder.Entity<Residencia>()
+                 .HasOne(m => m.Municipio)
+                 .WithMany(d => d.Residencias)
+                 .HasForeignKey(m => new { m.CodigoPais, m.CodigoDepartamento, m.CodigoMunicipio });
+
+            // Definición de la restricción única para Residencia
+            modelBuilder.Entity<Residencia>()
+                .HasIndex(r => new { r.Direccion, r.CodigoPais, r.CodigoDepartamento, r.CodigoMunicipio })
+                .IsUnique();
         }
     }
 }
