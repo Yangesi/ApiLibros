@@ -24,6 +24,9 @@ namespace APILibros.Models
         [StringLength(50)]
         public string Nombre { get; set; }
 
+        // Propiedad de navegación para Residencias
+        public List<Residencia> Residencias { get; set; } = new List<Residencia>();
+
     }
 }
 
